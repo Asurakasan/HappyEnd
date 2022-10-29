@@ -52,7 +52,7 @@ public class PlayerController : MonoBehaviour
         var lookDirection = Movement(targetVector);
         if(Mouse)
             RotateMouse();
-        else       
+         else if(lookDirection != new Vector3(0,0,0))       
             RotateDirection(lookDirection);
 
         ChangeAnimation();
