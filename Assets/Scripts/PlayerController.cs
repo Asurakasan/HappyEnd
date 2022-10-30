@@ -24,6 +24,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private int RunSpeed;
     [SerializeField] private float rotateSpeed;
     [SerializeField] private State CurrentState;
+    [SerializeField] private float SprintDeadZone;
+    [SerializeField] private float SprintingTime;
 
     [Header("Component")]
     [SerializeField] private Camera PlayerCamera;
@@ -47,7 +49,6 @@ public class PlayerController : MonoBehaviour
         InputVector = new Vector2(H, V);
         MousePos = Input.mousePosition;
 
-
         var targetVector = new Vector3(InputVector.x, 0, InputVector.y);
         var lookDirection = Movement(targetVector);
         if(Mouse)
@@ -57,13 +58,19 @@ public class PlayerController : MonoBehaviour
 
         ChangeAnimation();
 
-        if (Input.GetButtonDown("Run"))
+        if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
         {
-            Speed = RunSpeed;
-            CurrentState = State.Run;
+            if (SprintingTime < 5.2f)
+                SprintingTime += Time.deltaTime;
+            if (SprintingTime > 5)
+            {
+                Speed = RunSpeed;
+                CurrentState = State.Run;
+            }
         }
-        else if (Input.GetButtonUp("Run"))
+        else if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
         {
+            SprintingTime = 0; 
             Speed = SaveWalkSpeed;
             CurrentState = State.Walk;
         }
